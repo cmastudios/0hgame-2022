@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,12 +6,27 @@ using UnityEngine.SceneManagement;
 
 public class LevelController : MonoBehaviour
 {
+    private static LevelController instance;
+
     public GameObject flagPrefab;
 
+
+
+    private void Awake()
+    {
+        DontDestroyOnLoad(this);
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
     // Start is called before the first frame update
     void Start()
     {
-        DontDestroyOnLoad(this);
     }
 
     // Update is called once per frame
@@ -24,12 +40,12 @@ public class LevelController : MonoBehaviour
         SceneManager.LoadScene(sceneName: "BattleScene");
     }
 
-    public void EndCubaBattle()
+    public void EndCubaBattle(bool won)
     {
-        StartCoroutine(LoadYourAsyncScene());
+        StartCoroutine(LoadYourAsyncScene(won));
     }
 
-    IEnumerator LoadYourAsyncScene()
+    IEnumerator LoadYourAsyncScene(bool won)
     {
         // The Application loads the Scene in the background as the current Scene runs.
         // This is particularly good for creating loading screens.
@@ -44,10 +60,11 @@ public class LevelController : MonoBehaviour
             yield return null;
         }
 
+        if (won)
+        {
+            var cuba = GameObject.Find("Cuba");
 
-        var cuba = GameObject.Find("Cuba");
-
-        Instantiate(flagPrefab, cuba.transform.position, Quaternion.identity);
-
+            Instantiate(flagPrefab, cuba.transform.position, Quaternion.identity);
+        }
     }
 }
