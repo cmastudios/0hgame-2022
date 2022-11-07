@@ -30,5 +30,12 @@ public class BoatController : MonoBehaviour
         {
             rigidbody.AddForce(Vector2.down * 1000.0f * Time.deltaTime);
         }
+
+        if (Input.GetMouseButton(0))
+        {
+            var wc = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            var vec = wc - transform.position;
+            rigidbody.AddForce(((Vector2)vec).normalized * 1000.0f * Time.deltaTime);
+        }
     }
 }
